@@ -1,0 +1,52 @@
+# No docker bsdk
+name: Encoding workflows 
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore: 'README.md'
+  workflow_dispatch:
+    
+env:
+  GitHubMail: "${{ secrets.GH_MAIL }}"
+  GitHubName: "${{ secrets.GH_NAME }}"
+  FFMPEG: "${{ secrets.FFMPEG }}"
+  BOT_TOKEN: "${{ secrets.BOT_TOKEN }}"
+  APP_ID: "${{ secrets.API_ID }}"
+  API_HASH: "${{ secrets.API_HASH }}"
+  OWNER: "${{ secrets.OWNER }}"
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+       - name: Checkout
+         uses: actions/checkout@main
+
+       - name: Set Git Configs & Secrets
+         run: |
+           git config --global user.email ${GitHubMail}
+           git config --global user.name ${GitHubName}
+           git config --global credential.helper store
+           echo "https://${GitHubName}:${{ secrets.GH_TOKEN }}@github.com" > ~/.git-credentials
+       - name: Cloning Repo
+         continue-on-error: true
+         run: |
+           git clone -b main https://${GitHubName}:${{ secrets.GH_TOKEN }}@${{ secrets.GH_REPO }}
+       - name: Running Video Encoder 
+         timeout-minutes: 750
+         continue-on-error: true
+         run: |
+           cd ${{ secrets.GH_REPO_NAME }}
+           pip3 install -r requirements.txt && bash run.sh
+           
+       - name: Loop workflow
+         continue-on-error: true
+         run: |
+           git clone https://${{ secrets.GH_TOKEN }}@github.com/${GITHUB_REPOSITORY} loop
+           cd loop || exit 1
+           echo $(( RANDOM - ( RANDOM % RANDOM ) )) > looper.txt
+           git add looper.txt
+           git commit -m "Workflow : Loop at $(date -u +%D-%T%P) By Kai84"
+           git push -q https://${{ secrets.GH_TOKEN }}@github.com/${GITHUB_REPOSITORY} HEAD:main
+# Fill secrets 

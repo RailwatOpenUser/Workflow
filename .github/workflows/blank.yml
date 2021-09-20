@@ -32,12 +32,12 @@ jobs:
        - name: Cloning Repo
          continue-on-error: true
          run: |
-           git clone -b main https://RailwatOpenUser:${{ secrets.GH_TOKEN }}@Super-Video-Encoder 
+           git clone -b main https://RailwatOpenUser:${{ secrets.GH_TOKEN }}@github.com/RailwatOpenUser/Super-Video-Encoder 
        - name: Running Video Encoder 
          timeout-minutes: 750
          continue-on-error: true
          run: |
-           cd ${{ secrets.GH_REPO_NAME }}
+           cd Super-Video-Encoder 
            pip3 install -r requirements.txt  && bash run.sh
            
        - name: Loop workflow

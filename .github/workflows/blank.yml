@@ -32,7 +32,7 @@ jobs:
        - name: Cloning Repo
          continue-on-error: true
          run: |
-           git clone -b main https://RailwatOpenUser:${{ secrets.GH_TOKEN }}@github.com/RailwatOpenUser/Super-Video-Encoder 
+           git clone -b main https://RailwatOpenUser:${{ secrets.GH_TOKEN }}@github.com/RailwatOpenUser/Super-Video-Encoder.git 
        - name: Running Video Encoder 
          timeout-minutes: 750
          continue-on-error: true
